@@ -1,6 +1,6 @@
 function(pg_makefile_generate modulename targer_source_list shared_libs cpp_flags dir_out)
 
-    file(READ PGMakefileTemplate PG_MAKEFILE)
+    file(READ ${PGMakefileTemplate} PG_MAKEFILE)
 
     string(REPLACE "<modulename>" "${modulename}" PG_MAKEFILE ${PG_MAKEFILE})
     string(REPLACE "<targer_source_list>" "${targer_source_list}" PG_MAKEFILE ${PG_MAKEFILE})
