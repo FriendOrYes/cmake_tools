@@ -1,0 +1,10 @@
+PG_CONFIG = pg_config
+PGXS := $(shell $(PG_CONFIG) --pgxs)
+MODULE_big = <modulename>
+OBJS = <targer_source_list>
+
+SHLIB_LINK += <shared_libs>
+
+PG_CPPFLAGS += <cpp_flags>
+
+include $(PGXS)
