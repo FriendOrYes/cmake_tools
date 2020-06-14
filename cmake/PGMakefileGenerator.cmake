@@ -1,6 +1,10 @@
 function(read_makefile_template)
     file(READ ${PGMakefileTemplate} PG_MAKEFILE)
 
+    string(REPLACE ";" " " PG_MAKEFILE_TARGET_SOURCE_LIST "${PG_MAKEFILE_TARGET_SOURCE_LIST}")
+    string(REPLACE ";" " " PG_MAKEFILE_SHARED_LIBS "${PG_MAKEFILE_SHARED_LIBS}")
+    string(REPLACE ";" " " PG_MAKEFILE_CPP_FLAGS "${PG_MAKEFILE_CPP_FLAGS}")
+
     string(REPLACE "<modulename>" "${PG_MAKEFILE_MODULENAME}" PG_MAKEFILE ${PG_MAKEFILE})
     string(REPLACE "<targer_source_list>" "${PG_MAKEFILE_TARGET_SOURCE_LIST}" PG_MAKEFILE ${PG_MAKEFILE})
     string(REPLACE "<shared_libs>" "${PG_MAKEFILE_SHARED_LIBS}" PG_MAKEFILE ${PG_MAKEFILE})
