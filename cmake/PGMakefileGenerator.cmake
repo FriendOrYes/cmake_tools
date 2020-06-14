@@ -1,6 +1,15 @@
 function(read_makefile_template)
     file(READ ${PGMakefileTemplate} PG_MAKEFILE)
 
+    foreach(lib ${PG_MAKEFILE_SHARED_LIBS})
+        if(NOT ${lib} MATCHES "^-l|.a|.so")
+            set(lib_update "-l${lib}")
+            string(REPLACE "${lib}" "${lib_update}" PG_MAKEFILE_SHARED_LIBS "${PG_MAKEFILE_SHARED_LIBS}")
+        endif()
+    endforeach()
+
+    string(REPLACE ".c" ".o" PG_MAKEFILE_TARGET_SOURCE_LIST "${PG_MAKEFILE_TARGET_SOURCE_LIST}")
+
     string(REPLACE ";" " " PG_MAKEFILE_TARGET_SOURCE_LIST "${PG_MAKEFILE_TARGET_SOURCE_LIST}")
     string(REPLACE ";" " " PG_MAKEFILE_SHARED_LIBS "${PG_MAKEFILE_SHARED_LIBS}")
     string(REPLACE ";" " " PG_MAKEFILE_CPP_FLAGS "${PG_MAKEFILE_CPP_FLAGS}")
@@ -8,6 +17,21 @@ function(read_makefile_template)
     string(REPLACE "<modulename>" "${PG_MAKEFILE_MODULENAME}" PG_MAKEFILE ${PG_MAKEFILE})
     string(REPLACE "<targer_source_list>" "${PG_MAKEFILE_TARGET_SOURCE_LIST}" PG_MAKEFILE ${PG_MAKEFILE})
     string(REPLACE "<shared_libs>" "${PG_MAKEFILE_SHARED_LIBS}" PG_MAKEFILE ${PG_MAKEFILE})
+
+    foreach(include_path ${PG_MAKEFILE_INCLUDES_PATH})
+        if(NOT ${include_path} MATCHES "^-I")
+            set(include_path_updated "-I${include_path}")
+            string(REPLACE "${include_path}" "${include_path_updated}" PG_MAKEFILE_INCLUDES_PATH "${PG_MAKEFILE_INCLUDES_PATH}")
+        endif()
+    endforeach()
+
+    if(PG_MAKEFILE_INCLUDES_PATH)
+        string(REPLACE ";" " " PG_MAKEFILE_INCLUDES_PATH "${PG_MAKEFILE_INCLUDES_PATH}")
+        string(REPLACE "<includes_path>" "${PG_MAKEFILE_INCLUDES_PATH}" PG_MAKEFILE ${PG_MAKEFILE})
+    else()
+        string(REPLACE "<includes_path>" "" PG_MAKEFILE ${PG_MAKEFILE})
+    endif()
+
     string(REPLACE "<cpp_flags>" "${PG_MAKEFILE_CPP_FLAGS}" PG_MAKEFILE ${PG_MAKEFILE})
 
     if ( IS_DIRECTORY ${PG_MAKEFILE_DIR_OUT} )
@@ -26,7 +50,7 @@ function(pg_makefile_plugin_generate)
         PG_MAKEFILE
         ""
         "MODULENAME;DIR_OUT"
-        "TARGET_SOURCE_LIST;SHARED_LIBS;CPP_FLAGS"
+        "TARGET_SOURCE_LIST;SHARED_LIBS;INCLUDES_PATH;CPP_FLAGS"
         ${ARGN}
     )
 
@@ -44,7 +68,7 @@ function(pg_makefile_extention_generate)
         PG_MAKEFILE
         ""
         "MODULENAME;VERSION;DIR_OUT"
-        "TARGET_SOURCE_LIST;SHARED_LIBS;CPP_FLAGS"
+        "TARGET_SOURCE_LIST;SHARED_LIBS;INCLUDES_PATH;CPP_FLAGS"
         ${ARGN}
     )
 
