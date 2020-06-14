@@ -1,10 +1,16 @@
 function(read_makefile_template)
     file(READ ${PGMakefileTemplate} PG_MAKEFILE)
 
+    list(REMOVE_DUPLICATES PG_MAKEFILE_TARGET_SOURCE_LIST)
+    list(REMOVE_DUPLICATES PG_MAKEFILE_SHARED_LIBS)
+    list(REMOVE_DUPLICATES PG_MAKEFILE_INCLUDES_PATH)
+    list(REMOVE_DUPLICATES PG_MAKEFILE_CPP_FLAGS)
+
     foreach(lib ${PG_MAKEFILE_SHARED_LIBS})
         if(NOT ${lib} MATCHES "^-l|.a|.so")
-            set(lib_update "-l${lib}")
-            string(REPLACE "${lib}" "${lib_update}" PG_MAKEFILE_SHARED_LIBS "${PG_MAKEFILE_SHARED_LIBS}")
+            list(REMOVE_ITEM PG_MAKEFILE_SHARED_LIBS ${lib})
+            set(lib "-l${lib}")
+            list(APPEND PG_MAKEFILE_SHARED_LIBS ${lib})
         endif()
     endforeach()
 
@@ -17,11 +23,13 @@ function(read_makefile_template)
     string(REPLACE "<modulename>" "${PG_MAKEFILE_MODULENAME}" PG_MAKEFILE ${PG_MAKEFILE})
     string(REPLACE "<targer_source_list>" "${PG_MAKEFILE_TARGET_SOURCE_LIST}" PG_MAKEFILE ${PG_MAKEFILE})
     string(REPLACE "<shared_libs>" "${PG_MAKEFILE_SHARED_LIBS}" PG_MAKEFILE ${PG_MAKEFILE})
+    string(REPLACE "<cpp_flags>" "${PG_MAKEFILE_CPP_FLAGS}" PG_MAKEFILE ${PG_MAKEFILE})
 
     foreach(include_path ${PG_MAKEFILE_INCLUDES_PATH})
         if(NOT ${include_path} MATCHES "^-I")
-            set(include_path_updated "-I${include_path}")
-            string(REPLACE "${include_path}" "${include_path_updated}" PG_MAKEFILE_INCLUDES_PATH "${PG_MAKEFILE_INCLUDES_PATH}")
+            list(REMOVE_ITEM PG_MAKEFILE_INCLUDES_PATH ${include_path})
+            set(include_path "-I${include_path}")
+            list(APPEND PG_MAKEFILE_INCLUDES_PATH ${include_path})
         endif()
     endforeach()
 
@@ -31,8 +39,6 @@ function(read_makefile_template)
     else()
         string(REPLACE "<includes_path>" "" PG_MAKEFILE ${PG_MAKEFILE})
     endif()
-
-    string(REPLACE "<cpp_flags>" "${PG_MAKEFILE_CPP_FLAGS}" PG_MAKEFILE ${PG_MAKEFILE})
 
     if ( IS_DIRECTORY ${PG_MAKEFILE_DIR_OUT} )
         message(PG_MAKEFILE_DIR_OUT "=${PG_MAKEFILE_DIR_OUT}")

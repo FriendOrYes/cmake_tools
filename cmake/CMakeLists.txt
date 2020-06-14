@@ -25,7 +25,7 @@ pg_makefile_plugin_generate(
     DIR_OUT "")
 
 pg_makefile_extention_generate(
-    MODULENAME ${modulename}
+    MODULENAME ${modulename}_extention
     TARGET_SOURCE_LIST ${targer_source_list}
     SHARED_LIBS ${shared_libs}
     INCLUDES_PATH ${include_path}
@@ -34,11 +34,19 @@ pg_makefile_extention_generate(
     DIR_OUT "")
 
 pg_makefile_extention_generate(
-    MODULENAME ${modulename}
+    MODULENAME test_list_notstring
     TARGET_SOURCE_LIST ${targer_source_list}
     SHARED_LIBS -lpq -ltest pq
     INCLUDES_PATH ${include_path}
     CPP_FLAGS ${cpp_flags}
+    VERSION "0.0.1"
+    DIR_OUT "")
+
+pg_makefile_extention_generate(
+    MODULENAME test_without_cpp_flags
+    TARGET_SOURCE_LIST ${targer_source_list}
+    SHARED_LIBS -lpq -ltest pq
+    INCLUDES_PATH ${include_path}
     VERSION "0.0.1"
     DIR_OUT "")
 

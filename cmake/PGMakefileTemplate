@@ -5,6 +5,6 @@ OBJS = <targer_source_list>
 
 SHLIB_LINK += <shared_libs>
 
-PG_CPPFLAGS += <cpp_flags>
+PG_CPPFLAGS += <cpp_flags> <includes_path>
 
 include $(PGXS)
