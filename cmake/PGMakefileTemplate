@@ -3,8 +3,8 @@ PGXS := $(shell $(PG_CONFIG) --pgxs)
 MODULE_big = <modulename>
 OBJS = <targer_source_list>
 
-SHLIB_LINK += <shared_libs>
-
+SHLIB_LINK += <shared_libs_path> <shared_libs>
+PG_LIBS += <libs_path> <libs>
 PG_CPPFLAGS += <cpp_flags> <includes_path>
 
 include $(PGXS)
